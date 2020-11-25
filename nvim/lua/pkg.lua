@@ -63,13 +63,13 @@ function pkg.init()
         vim.cmd("packadd nvim-web-devicons")
         vim.cmd("packadd barbar.nvim")
         vim.cmd("packadd vimwiki")
-        vim.cmd("packadd vim-clap")
+        --vim.cmd("packadd vim-clap")
         vim.cmd("packadd vim-polyglot")
 
         vim.cmd(
-            [[command! PackUpdate source $MYVIMRC | lua require("pkg").packUpdate()]])
-        vim.cmd([[command! PackClean  lua require("pkg").packClean()]])
-        vim.cmd([[command! PackStatus lua require("pkg").packStatus()]])
+            [[command! PackUpdate source $MYVIMRC | lua.require("pkg").packUpdate()]])
+        vim.cmd([[command! PackClean  lua.require("pkg").packClean()]])
+        vim.cmd([[command! PackStatus lua.require("pkg").packStatus()]])
 
         require("config.treesitter").init()
         require("config.startify").init()
