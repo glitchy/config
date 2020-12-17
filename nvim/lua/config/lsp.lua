@@ -5,22 +5,28 @@
 local vim = vim
 local set_keymap = vim.api.nvim_set_keymap
 
-vim.cmd("packadd nvim-lsp")
+vim.cmd("packadd completion-nvim")
 
 local lsp = {
-    nvim_lsp = require("nvim_lsp"),
+    configs = require("lspconfig"),
     callbacks = require("config/lsp_callbacks")
 }
 
 function lsp.init()
-    lsp.nvim_lsp.clangd.setup({})
-    lsp.nvim_lsp.dockerls.setup({})
-    lsp.nvim_lsp.jsonls.setup({})
-    lsp.nvim_lsp.pyls_ms.setup({})
-    lsp.nvim_lsp.rust_analyzer.setup({})
-    lsp.nvim_lsp.sumneko_lua.setup({})
-    lsp.nvim_lsp.terraformls.setup({})
-    lsp.nvim_lsp.vimls.setup({})
+    vim.cmd("autocmd! BufEnter * lua require('completion').on_attach()")
+    vim.cmd([[inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"]])
+    vim.cmd([[inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"]])
+    vim.cmd([[set completeopt=menuone,noinsert,noselect]])
+    vim.cmd([[set shortmess+=c]])
+
+    lsp.configs.clangd.setup {}
+    lsp.configs.dockerls.setup {}
+    lsp.configs.jsonls.setup {}
+    lsp.configs.rust_analyzer.setup {}
+    -- lsp.configs.sumneko_lua.setup {on_attach = require'completion'.on_attach}
+    lsp.configs.terraformls.setup {}
+    lsp.configs.vimls.setup {}
+    lsp.configs.gopls.setup {}
 
     lsp.keymaps()
     lsp.set_signs()
@@ -33,14 +39,14 @@ function lsp.init()
 end
 
 function lsp.set_signs()
-    vim.cmd("sign define LspDiagnosticsErrorSign text= ")
-    vim.cmd("sign define LspDiagnosticsWarningSign text= ")
-    vim.cmd("sign define LspDiagnosticsInformationSign text= ")
-    vim.cmd("sign define LspDiagnosticsHintSign text=")
-    vim.cmd("hi LspDiagnosticsHint guifg=#82aafe")
-    vim.cmd("hi LspDiagnosticsWarning guifg=#ffcb6b")
-    vim.cmd("hi LspDiagnosticsError guifg=#f07178")
-    vim.cmd("hi LspDiagnosticsInformtion guifg=#c3e88d")
+    vim.cmd("highlight LspDiagnosticsDefaultHint guifg=#82aafe")
+    vim.cmd("highlight LspDiagnosticsDefaultWarning guifg=#ffcb6b")
+    vim.cmd("highlight LspDiagnosticsDefaultError guifg=#f07178")
+    vim.cmd("highlight LspDiagnosticsDefaultInformtion guifg=#c3e88d")
+    vim.cmd("sign define LspDiagnosticsSignError text= ")
+    vim.cmd("sign define LspDiagnosticsSignWarning text= ")
+    vim.cmd("sign define LspDiagnosticsSignInformation text= ")
+    vim.cmd("sign define LspDiagnosticsSignHint text=")
 end
 
 function lsp.keymaps()

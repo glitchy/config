@@ -45,17 +45,44 @@ vim.cmd("filetype plugin indent on")
 require("util").create_augroups({
     startup = {
         {
-            "FileType",
-            "rust",
+            "FileType", "rust",
             [[set relativenumber | packadd rust | setlocal omnifunc=v:lua.vim.lsp.omnifunc]]
-        },
-        {"FileType", "json", [[syntax match Comment +\\/\\/.\\+$+]]},
+        }, {"FileType", "vista_kind", [[lua require("config.vista").init()]]},
         {"FileType", "c", [[setlocal shiftwidth=4 noexpandtab]]},
         {"FileType", "cpp", [[setlocal shiftwidth=4 noexpandtab]]},
-        {"FileType", "defx", [[lua require("config.defx").keymaps()]]}
+        {
+            "FileType", "python",
+            [[lua require("config.lsp").configs.pyls_ms.setup{}]]
+        }, {"FileType", "defx", [[lua require("config.defx").keymaps()]]}
     }
 })
 
 vim.g["float_preview#docked"] = 0
 vim.g["float_preview#max_width"] = 133
 vim.g["float_preview#winhl"] = "Normal:Pmenu,NormalNC:Pmenu"
+
+function disable_extras()
+    vim.cmd([[call nvim_win_set_option(g:float_preview#win, 'number', v:false)]])
+    vim.cmd(
+        [[call nvim_win_set_option(g:float_preview#win, 'relativenumber', v:false)]])
+    vim.cmd(
+        [[call nvim_win_set_option(g:float_preview#win, 'cursorline', v:false)]])
+    vim.cmd([[call nvim_win_set_var(g:float_preview#win, 'syntax', 'on')]])
+end
+
+function check_back_space()
+    local col = vim.fn.col('.') - 1
+    return not col or vim.fn.getline('.')[col - 1] == [[\s]]
+end
+
+function my_file_type()
+    return vim.api.nvim_exec(
+               [[winwidth(0) > 70 ? (strlen(&filetype) ? &filetype . ' ' . WebDevIconsGetFileTypeSymbol() : 'no ft') : '']],
+               true)
+end
+
+function my_file_format()
+    return vim.api.nvim_exec(
+               [[winwidth(0) > 70 ? (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : '']],
+               true)
+end

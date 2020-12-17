@@ -1,0 +1,12 @@
+{
+    "Lua.diagnostics.disable": [
+        "redefined-local",
+        "unused-local"
+    ],
+    "Lua.diagnostics.globals": [
+        "vim"
+    ],
+    "files.watcherExclude": {
+        "**/target": true
+    }
+}

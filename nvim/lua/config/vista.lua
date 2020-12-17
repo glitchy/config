@@ -4,17 +4,18 @@
 --
 local vim = vim
 
+vim.cmd("packadd vista.vim")
+vim.cmd("packadd barbar.nvim")
+
 local vista = {}
 
-function vista.init()
-    vim.cmd("packadd vista.vim")
-    vista.config()
-end
+function vista.init() vista.config() end
 
 function vista.config()
+    vim.bo.buflisted = false
+    vim.g.vista_disable_statusline = 1
+    vim.g.vista_close_on_jump = 1
     vim.g["vista#renderer#enable_icons"] = 1
-    vim.g.vista_sidebar_width = 50
-    vim.g.vista_icon_indent = {"╰─▸ ", "├─▸ "}
     vim.g.vista_default_executive = "nvim_lsp"
     vim.g.vista_executive_for = {
         vimwiki = "markdown",
@@ -23,7 +24,8 @@ function vista.config()
         terraform = "nvim_lsp",
         rust = "nvim_lsp",
         lua = "nvim_lsp",
-        python = "nvim_lsp"
+        python = "nvim_lsp",
+        go = "nvim_lsp"
     }
 end
 

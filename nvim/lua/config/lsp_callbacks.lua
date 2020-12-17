@@ -8,11 +8,9 @@ local util = require("util")
 local diagnostic_ns = vim.api.nvim_create_namespace("vim_lsp_diagnostics")
 
 local function buf_diagnostics_virtual_text(bufnr, diagnostics)
-    if not diagnostics then
-        return
-    end
+    if not diagnostics then return end
 
-    local buffer_line_diagnostics = vim.lsp.util.diagnostics_group_by_line(
+    local buffer_line_diagnostics = vim.lsp.diagnostic.get_line_diagnostics(
                                         diagnostics)
 
     for line, line_diags in pairs(buffer_line_diagnostics) do
@@ -27,9 +25,7 @@ local function buf_diagnostics_virtual_text(bufnr, diagnostics)
 
         if #lines > 0 then
             local line_content = lines[1]
-            if line_content == nil then
-                goto continue
-            end
+            if line_content == nil then goto continue end
             line_width = vim.fn.strdisplaywidth(line_content)
         end
 
@@ -66,8 +62,7 @@ local function buf_diagnostics_virtual_text(bufnr, diagnostics)
             end
 
             table.insert(virt_texts, {
-                message,
-                vim.lsp.util.get_severity_highlight_name(last.severity)
+                message, vim.lsp.util.get_severity_highlight_name(last.severity)
             })
         else
             -- 1 diagnostic in line
@@ -90,11 +85,9 @@ end
 local function show_line_diagnostics()
     local lines = {"Diagnostics:"}
     local highlights = {{0, "Bold"}}
-    local line_diagnostics = vim.lsp.util.get_line_diagnostics()
+    local line_diagnostics = vim.lsp.util.diagnostics_group_by_line()
 
-    if vim.tbl_isempty(line_diagnostics) then
-        return
-    end
+    if vim.tbl_isempty(line_diagnostics) then return end
 
     for i, diagnostic in ipairs(line_diagnostics) do
         local prefix = string.format("%d. ", i)
@@ -114,31 +107,27 @@ local function show_line_diagnostics()
         end
     end
 
-    local popup_bufnr, winnr = util.popup_window(lines, "plaintext", {}, true)
+    local popup_bufnr, winnr = util.popup_window(lines, "markdown", {}, true)
 
     return popup_bufnr, winnr
 end
 
 local function hover_callback(_, _, result)
-    if not (result and result.contents) then
-        return
-    end
+    if not (result and result.contents) then return end
 
     local markdown_lines = lsp_util.convert_input_to_markdown_lines(
                                result.contents)
 
     markdown_lines = lsp_util.trim_empty_lines(markdown_lines)
 
-    if vim.tbl_isempty(markdown_lines) then
-        return
-    end
+    if vim.tbl_isempty(markdown_lines) then return end
 
     util.popup_window(markdown_lines, "markdown", {}, true)
 end
 
 local function diagnostics_callback(_, _, result)
 
-    -- prevent creating/loading bufers for empty diagnostics
+    -- prevent creating/loading buffers for empty diagnostics
     if not result or not result.diagnostics or
         vim.tbl_isempty(result.diagnostics) then
         api.nvim_command("doautocmd User LspDiagnosticsChanged")
@@ -159,7 +148,7 @@ local function diagnostics_callback(_, _, result)
         return
     end
 
-    lsp_util.buf_clear_diagnostics(bufnr)
+    vim.lsp.diagnostic.clear(bufnr)
 
     for _, diagnostic in ipairs(result.diagnostics) do
         if diagnostic.severity == nil then
@@ -167,10 +156,10 @@ local function diagnostics_callback(_, _, result)
         end
     end
 
-    lsp_util.buf_diagnostics_save_positions(bufnr, result.diagnostics)
-    lsp_util.buf_diagnostics_underline(bufnr, result.diagnostics)
-    lsp_util.buf_diagnostics_signs(bufnr, result.diagnostics)
-    buf_diagnostics_virtual_text(bufnr, result.diagnostics)
+    vim.lsp.diagnostic.save(result.diagnostics, bufnr)
+    vim.lsp.diagnostic.set_underline(result.diagnostics, bufnr)
+    vim.lsp.diagnostic.set_signs(result.diagnostics, bufnr)
+    vim.lsp.diagnostic.set_virtual_text(result.diagnostics, bufnr)
 
     if result and result.diagnostics then
         for _, v in ipairs(result.diagnostics) do

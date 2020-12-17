@@ -17,20 +17,18 @@ function lightline.config()
     vim.g["lightline#bufferline#enable_devicons"] = 1
     vim.g["lightline#bufferline#unicode_symbols"] = 1
     vim.g["lightline#bufferline#show_number"] = 2
-    vim.g["lightline#bufferline#unnamed"] = "[No Name]"
+    vim.g["lightline#bufferline#unnamed"] = ""
 
     vim.g.lightline = {
-        active = {
-            left = {{"mode", "paste"}, {"gitbranch", "filename"}}
-        },
+        active = {left = {{"mode", "paste"}, {"gitbranch", "filename"}}},
         colorscheme = "material_vim",
-        separator = {left = "", right = ""},
-        subseparator = {left = "", right = ""},
+        separator = {left = "", right = ""},
+        subseparator = {left = "", right = ""},
         component_function = {
             gitbranch = "FugitiveHead",
             filename = "LightlineFilename",
             filetype = "MyFiletype",
-            fileformat = "MyFiletype",
+            fileformat = "MyFiletype"
         }
     }
 end

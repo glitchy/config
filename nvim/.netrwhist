@@ -1,4 +1,12 @@
 let g:netrw_dirhistmax  =10
 let g:netrw_dirhistcnt =2
-let g:netrw_dirhist_2='/Users/lukasjorgensen/zshrc'
-let g:netrw_dirhist_1='/Users/lukasjorgensen/.config/nvim'
+let g:netrw_dirhist_2='/Users/brandon/.config/nvim/lua/config'
+let g:netrw_dirhist_1='/Users/brandon/.config/nvim/lua'
+let g:netrw_dirhist_0='/Users/brandon/.config/nvim'
+let g:netrw_dirhist_9='/Users/brandon/.config/nvim/lua'
+let g:netrw_dirhist_8='/Users/brandon/.config/nvim'
+let g:netrw_dirhist_7='/Users/brandon/.config/nvim/lua'
+let g:netrw_dirhist_6='/Users/brandon/.config/nvim'
+let g:netrw_dirhist_5='/Users/brandon/Source/ElToro/diagonalley/kubernetes/gringotts/geocoder/templates'
+let g:netrw_dirhist_4='/Users/brandon/Source/ElToro/diagonalley/kubernetes/gringotts/geocoder'
+let g:netrw_dirhist_3='/Users/brandon/Source/ElToro/diagonalley/druid/packer/druid/init/templates/druid/data/historical'
