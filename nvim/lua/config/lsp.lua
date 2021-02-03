@@ -23,6 +23,7 @@ function lsp.init()
     lsp.configs.dockerls.setup {}
     lsp.configs.jsonls.setup {}
     lsp.configs.rust_analyzer.setup {}
+    lsp.configs.elixirls.setup { cmd = { "/Users/lukasjorgensen/.config/elixir-ls/language_server.sh" } }
     -- lsp.configs.sumneko_lua.setup {on_attach = require'completion'.on_attach}
     lsp.configs.terraformls.setup {}
     lsp.configs.vimls.setup {}

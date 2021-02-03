@@ -46,14 +46,20 @@ require("util").create_augroups({
     startup = {
         {
             "FileType", "rust",
-            [[set relativenumber | packadd rust | setlocal omnifunc=v:lua.vim.lsp.omnifunc]]
-        }, {"FileType", "vista_kind", [[lua require("config.vista").init()]]},
+            [[set relativenumber | set number | packadd rust | setlocal omnifunc=v:lua.vim.lsp.omnifunc]]
+        },
+	{
+            "FileType", "elixir",
+            [[set relativenumber | set number | setlocal omnifunc=v:lua.vim.lsp.omnifunc]]
+        },
+	{"FileType", "vista_kind", [[lua require("config.vista").init()]]},
         {"FileType", "c", [[setlocal shiftwidth=4 noexpandtab]]},
         {"FileType", "cpp", [[setlocal shiftwidth=4 noexpandtab]]},
         {
             "FileType", "python",
             [[lua require("config.lsp").configs.pyls_ms.setup{}]]
-        }, {"FileType", "defx", [[lua require("config.defx").keymaps()]]}
+        }, 
+	{"FileType", "defx", [[lua require("config.defx").keymaps()]]}
     }
 })
 
