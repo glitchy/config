@@ -29,6 +29,15 @@ vim.o.wildignore = vim.o.wildignore .. "*/tmp/*,*.so,*.swp,*.zip"
 
 vim.g.python3_host_prog = "/usr/local/bin/python3"
 
+-- Vimwiki Config
+--vim.g.vimwiki_list = [{'path': '~/vimwiki/',
+--                      \ 'syntax': 'markdown', 'ext': '.md'}]
+--  let wiki = {}
+--  let wiki.path = '~/my_wiki/'
+--  let wiki.nested_syntaxes = {'python': 'python', 'c++': 'cpp'}
+--  let g:vimwiki_list = [wiki]
+
+
 require("pkg").init()
 
 vim.g.material_theme_style = "palenight"
@@ -50,14 +59,14 @@ require("util").create_augroups({
         },
 	{
             "FileType", "elixir",
-            [[set relativenumber | set number | setlocal omnifunc=v:lua.vim.lsp.omnifunc]]
+            [[set relativenumber | set number | set nowrap]]
         },
 	{"FileType", "vista_kind", [[lua require("config.vista").init()]]},
         {"FileType", "c", [[setlocal shiftwidth=4 noexpandtab]]},
         {"FileType", "cpp", [[setlocal shiftwidth=4 noexpandtab]]},
         {
             "FileType", "python",
-            [[lua require("config.lsp").configs.pyls_ms.setup{}]]
+            [[set relativenumber | set number | lua require("config.lsp").configs.pyls_ms.setup{}]]
         }, 
 	{"FileType", "defx", [[lua require("config.defx").keymaps()]]}
     }

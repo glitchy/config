@@ -18,6 +18,7 @@ local pkg = {
         {"ryanoasis/vim-devicons"}, {"liuchengxu/vista.vim"},
         {"tjdevries/nlua.nvim"}, {"kyazdani42/nvim-web-devicons"},
 	{"elixir-editors/vim-elixir"}, {"slashmili/alchemist.vim"},
+	{"vimwiki/vimwiki"},
         {"fatih/vim-go", {["type"] = "opt"}},
         {"k-takata/minpac", {["type"] = "opt"}},
         {"vimwiki/vimwiki", {["type"] = "opt"}},
@@ -70,11 +71,11 @@ end
 function pkg.packUpdate()
     pkg.init()
     call_fn("minpac#update", {""})
-    vim.cmd("LspInstall dockerls")
-    vim.cmd("LspInstall vimls")
-    vim.cmd("LspInstall pyls_ms")
-    vim.cmd("LspInstall jsonls")
-    vim.cmd("TSUpdate")
+    --vim.cmd("LspInstall dockerls")
+    --vim.cmd("LspInstall vimls")
+    --vim.cmd("LspInstall pyls_ms")
+    --vim.cmd("LspInstall jsonls")
+    --vim.cmd("TSUpdate")
 end
 
 function pkg.packClean()
