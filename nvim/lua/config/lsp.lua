@@ -9,7 +9,7 @@ vim.cmd("packadd completion-nvim")
 
 local lsp = {
     configs = require("lspconfig"),
-    callbacks = require("config/lsp_callbacks")
+    handlers = require("config/lsp_callbacks")
 }
 
 function lsp.init()
@@ -32,9 +32,9 @@ function lsp.init()
     lsp.keymaps()
     lsp.set_signs()
 
-    vim.lsp.callbacks["textDocument/publishDiagnostics"] =
-        lsp.callbacks.diagnostics_callback
-    vim.lsp.callbacks["textDocument/hover"] = lsp.callbacks.hover_callback
+    vim.lsp.handlers["textDocument/publishDiagnostics"] =
+        lsp.handlers.diagnostics_callback
+    vim.lsp.handlers["textDocument/hover"] = lsp.handlers.hover_callback
 
     vim.cmd("autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif")
 end
