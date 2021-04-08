@@ -6,10 +6,16 @@ function keymaps.init()
     -- Set Leader to Spacebar
     set_keymap("", "<Space>,", "<Nop>", {silent = true, noremap = true})
     vim.g.mapleader = " "
-
+    
+    keymaps.goyo()
     keymaps.barbar()
     keymaps.clap()
     keymaps.navigation()
+end
+
+function keymaps.goyo()
+    -- Toggle zenmode
+    set_keymap("n", "<leader>g", ":Goyo<CR>", {silent = true, noremap = true})
 end
 
 function keymaps.barbar()

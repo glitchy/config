@@ -18,7 +18,7 @@ local pkg = {
         {"ryanoasis/vim-devicons"}, {"liuchengxu/vista.vim"},
         {"tjdevries/nlua.nvim"}, {"kyazdani42/nvim-web-devicons"},
 	{"elixir-editors/vim-elixir"}, {"slashmili/alchemist.vim"},
-	{"vimwiki/vimwiki"},
+	{"vimwiki/vimwiki"}, {"junegunn/goyo.vim"},
         {"fatih/vim-go", {["type"] = "opt"}},
         {"k-takata/minpac", {["type"] = "opt"}},
         {"vimwiki/vimwiki", {["type"] = "opt"}},
