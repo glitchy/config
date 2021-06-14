@@ -51,7 +51,7 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git brew osx docker docker-compose)
+plugins=(asdf brew docker docker-compose git osx zsh-autosuggestions)
 source $ZSH/oh-my-zsh.sh
 # User configuration
 export ZSH_AUTOSUGGEST_USE_ASYNC="true"
@@ -80,6 +80,7 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 alias vim="nvim -p"
 alias vi="vim"
+alias t="tmux"
 alias date="gdate"
 alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
@@ -96,34 +97,36 @@ export CPPFLAGS="-I/usr/local/opt/llvm/include"
 # Function to automatically establish tmux session
 # or attach to a ongoing tmux session automatically.
 function ssh () {
-    /usr/bin/ssh -t $@ "tmux attach || tmux new" || echo "The server you are connecting to doesn't appear to have 'tmux' installed. Try 'sssh' for connecting without automatic tmux connection.";
+    /usr/bin/ssh $@;
 }
 # Function to connect to vanilla SSH (no tmux).
 function sssh () {
-    /usr/bin/ssh $@;
+    /usr/bin/ssh -t $@ "tmux attach || tmux new" || echo "The server you are connecting to doesn't appear to have 'tmux' installed. Try 'ssh' for connecting without automatic tmux connection.";
 }
 function docker-cleanup () {
-    echo 'Removing old containers...';
+    echo 'removing old containers...';
     docker rm -v $(docker ps -a -q -f status=exited);
-    echo 'Removing old images...';
+    echo 'removing old images...';
     docker rmi $(docker images -f "dangling=true" -q);
-    echo 'Removing old volumes...';
+    echo 'removing old volumes...';
     docker volume rm $(docker volume ls -qf dangling=true);
 }
 function update () {
     echo 'Updating OhMyZsh...';
     omz update;
-    echo 'Updating Spaceship...';
+    #echo 'Updating Spaceship...';
     #pushd "$ZSH_CUSTOM/themes/spaceship-prompt"
     #    git reset --hard && git pull
     #popd
-    echo 'Updating Homebrew Packages...';
+    echo 'Updating homebrew packages...';
     brew update && brew upgrade && brew upgrade --cask;
-    echo 'Updating Neovim...';
-    brew reinstall neovim;
-    echo 'Updating Rust...';
+    echo 'Updating neovim...';
+    #brew reinstall neovim;
+    brew uninstall neovim;
+    brew install --head neovim;
+    echo 'Updating rust...';
     rustup update;
-    echo 'Updating Rust Analyzer...';
+    echo 'Updating rust language server (rust analyzer)...';
     pushd ~/Source/rust-analyzer;
         git reset --hard && git pull
         gsed -i -e '/\[profile.release\]/ a\
@@ -133,16 +136,36 @@ lto = true\ncodegen-units = 1' Cargo.toml
     # Backup RUSTFLAGS to change for Clap installation.
     tmp=$RUSTFLAGS;
     export RUSTFLAGS="-C target-cpu=native -C link-arg=-undefined -C link-arg=dynamic_lookup";
-    echo 'Updating Vim-Clap...';
+    echo 'Updating vim-clap...';
     pushd ~/.config/nvim/pack/minpac/opt/vim-clap;
         git reset --hard && git pull
         make
     popd;
     export RUSTFLAGS=$tmp;
+    echo 'Updating elixir language server (elixir-ls)...';
+    pushd ~/Source/elixir-ls;
+        rm -rf release/
+        git reset --hard && git pull
+        yes | mix deps.get && mix compile && mix elixir_ls.release -o release
+    popd;
+    echo 'Updating python language server (pyls)...'
+    pip3 install 'python-language-server[all]' -U
+
 }
 function cargo-kernel-mod-xbuild () {
     echo 'Running cargo-xbuild...';
     RUST_TARGET_PATH=$(pwd)/.. cargo xbuild --target x86_64-linux-kernel-module
+}
+function daily_grind () {
+	cd ~/code/glitchy/moria/loggy
+	today=$( date +%Y%m%d )   # or: printf -v today '%(%Y%m%d)T' -1
+	number=0
+	fname=dg_$today.txt
+	while [ -e "$fname" ]; do
+		printf -v fname '%s-%02d.txt' "$today" "$(( ++number ))"
+	done
+	printf 'Will use "%s" as filename\n' "$fname"
+	touch "$fname"
 }
 #test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 fpath+=${ZDOTDIR:-~}/.zsh_functions
@@ -150,8 +173,19 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 export ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=/usr/local/share/zsh-syntax-highlighting/highlighters
-source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+#source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 export PATH="/usr/local/opt/libressl/bin:$PATH"
 export PATH="/usr/local/opt/llvm/bin:$PATH"
 ssh-add
 autoload -U +X bashcompinit && bashcompinit
+alias meltano!="source $MELTANO_PROJECT_PATH/.venv/meltano/bin/activate"
+# Setting up Python environment
+export LDFLAGS="-L/usr/local/opt/zlib/lib" 
+export CPPFLAGS="-I/usr/local/opt/zlib/include"
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init -)"
+fi
+export REBAR3=/usr/Source/rebar3
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+export PYTHONPATH=$PYTHONPATH:/Users/lukasjorgensen/code/blockfi/github/cyclope
